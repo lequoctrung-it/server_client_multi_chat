@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class Client_GUI extends JFrame {
+public class Client_GUI extends JFrame implements Runnable {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -49,20 +49,7 @@ public class Client_GUI extends JFrame {
 					e.printStackTrace();
 				}
 			}
-		});
-		
-		//Core function
-		try {
-			client = new Socket(InetAddress.getLocalHost(), port);
-			new ReadClient(client, chatboxArea).start();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		});		
 	}
 
 	/**
@@ -70,7 +57,7 @@ public class Client_GUI extends JFrame {
 	 */
 	public Client_GUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 454, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -94,7 +81,6 @@ public class Client_GUI extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				String sms = null;
 				String name = null;
 				if (nameField.getText().isEmpty()) {
@@ -103,7 +89,7 @@ public class Client_GUI extends JFrame {
 					name = nameField.getText().trim();
 				}
 				sms = name + ": " + messageField.getText().trim();
-				new WriteClient(client, chatboxArea, sms).start();;
+				new WriteClient(client, chatboxArea, sms).start();
 				messageField.setText("");
 				
 			}
@@ -121,38 +107,48 @@ public class Client_GUI extends JFrame {
 		contentPane.add(scrollPane);
 		
 		nameField = new JTextField();
-		nameField.setBounds(152, 11, 286, 19);
+		nameField.setBounds(152, 11, 141, 19);
 		contentPane.add(nameField);
 		nameField.setColumns(10);
+		
+		JButton btnNewButton = new JButton("Connect");
+		btnNewButton.setBounds(305, 8, 133, 25);
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					client = new Socket(InetAddress.getLocalHost(), port);
+					Thread t = new Thread(Client_GUI.this);
+					t.start();
+					
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+			}
+		});
+		contentPane.add(btnNewButton);
 	}
-}
 
-class ReadClient extends Thread {
-	private Socket client;
-	private JTextArea messageChatbox;
-
-	public ReadClient(Socket client, JTextArea messageChatbox) {
-		this.client = client;
-		this.messageChatbox = messageChatbox;
-	}
-	
 	@Override
 	public void run() {
-		DataInputStream dataInputStream = null;
+		String str="";
 		try {
 			dataInputStream = new DataInputStream(client.getInputStream());
-			String sms;
-			while (true) {
-				sms = dataInputStream.readUTF();
-				System.out.println("Client read: " + sms);
-				messageChatbox.setText(messageChatbox.getText().trim() + "\n" + sms); 
+			while(!str.equals("exit")) {
+				str=dataInputStream.readUTF();
+				chatboxArea.setText(chatboxArea.getText() + "\n" + str);
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		finally
+		{
 			try {
-				dataInputStream.close();
 				client.close();
-			} catch (IOException ex) {
-				System.out.println("Server disconnected!");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -187,7 +183,7 @@ class WriteClient extends Thread {
 				dataOutputStream.close();
 				client.close();
 			} catch (IOException ex) {
-				System.out.println("Server disconnected!");
+				System.out.println("Server disconnected!W" + e);
 			}
 		}
 	}

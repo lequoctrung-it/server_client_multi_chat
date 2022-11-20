@@ -156,7 +156,7 @@ class ReadServer extends Thread {
 				dataInputStream.close();
 				server.close();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}
