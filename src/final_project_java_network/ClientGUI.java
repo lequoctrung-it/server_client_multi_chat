@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class Client_GUI extends JFrame implements Runnable {
+public class ClientGUI extends JFrame implements Runnable {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -43,7 +43,7 @@ public class Client_GUI extends JFrame implements Runnable {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Client_GUI frame = new Client_GUI();
+					ClientGUI frame = new ClientGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,7 +55,7 @@ public class Client_GUI extends JFrame implements Runnable {
 	/**
 	 * Create the frame.
 	 */
-	public Client_GUI() {
+	public ClientGUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 454, 300);
 		contentPane = new JPanel();
@@ -119,7 +119,7 @@ public class Client_GUI extends JFrame implements Runnable {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					client = new Socket(InetAddress.getLocalHost(), port);
-					Thread t = new Thread(Client_GUI.this);
+					Thread t = new Thread(ClientGUI.this);
 					t.start();
 					
 				} catch (IOException e2) {
@@ -169,14 +169,11 @@ class WriteClient extends Thread {
 	public void run() {
 		DataOutputStream dataOutputStream = null;
 		try {
-			System.out.println("TEST CLIENT WRITE " + client.getOutputStream());
 			dataOutputStream = new DataOutputStream(client.getOutputStream());
 			
-//			while (true) {
-				dataOutputStream.writeUTF(messageSend);
-				dataOutputStream.flush();
-				System.out.println("Client write: " + messageSend);
-//			}
+			dataOutputStream.writeUTF(messageSend);
+			dataOutputStream.flush();
+			System.out.println("Client write: " + messageSend);
 			messageChatbox.setText(messageChatbox.getText().trim() + "\n" + messageSend);
 		} catch (Exception e) {
 			try {
