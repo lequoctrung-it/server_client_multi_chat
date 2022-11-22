@@ -32,8 +32,9 @@ import java.util.ArrayList;
 import javax.swing.JTextArea;
 import java.awt.Color;
 
-public class Server_GUI extends JFrame {
+public class Server_GUI extends JFrame{
 
+	
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -48,7 +49,7 @@ public class Server_GUI extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -74,12 +75,13 @@ public class Server_GUI extends JFrame {
 			e.printStackTrace();
 		}
 	}
+	
 
 	/**
 	 * Create the frame.
 	 */
 	public Server_GUI() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

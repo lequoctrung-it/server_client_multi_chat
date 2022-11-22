@@ -56,7 +56,7 @@ public class Client_GUI extends JFrame implements Runnable {
 	 * Create the frame.
 	 */
 	public Client_GUI() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 454, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
