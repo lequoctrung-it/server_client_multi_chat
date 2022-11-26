@@ -7,12 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,7 +23,6 @@ import javax.swing.border.EmptyBorder;
 public class OtherFunctions extends JFrame implements Runnable {
 
 	private JPanel contentPane;
-	private JTextField textField;
 	private JTextField numberA;
 	private static JTextArea resultArea;
 
@@ -115,9 +110,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.SQUARE_AREA)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.SQUARE_AREA.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -129,9 +125,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.SQUARE_PERIMETER)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.SQUARE_PERIMETER.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -143,9 +140,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.RECTANGLE_AREA)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.RECTANGLE_AREA.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -157,9 +155,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.RECTANGLE_PERIMETER)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.RECTANGLE_PERIMETER.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -171,9 +170,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.MINUS)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.MINUS.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -185,10 +185,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.ADD)).start();
-
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.ADD.name();
+				new WriteData(client, sms).start();
 			}
 		});
 		contentPane.add(btnAdd);
@@ -199,9 +199,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.DIVIDE)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.DIVIDE.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -213,9 +214,10 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int numA = Integer.parseInt(numberA.getText().trim());
-				int numB = Integer.parseInt(numberB.getText().trim());
-				new WriteData(client, new Numbers(numA, numB, Action.MULTIPLY)).start();
+				String numA = numberA.getText().trim();
+				String numB = numberB.getText().trim();
+				String sms = numA + "@" + numB + "@" + Action.MULTIPLY.name();
+				new WriteData(client, sms).start();
 
 			}
 		});
@@ -238,88 +240,42 @@ public class OtherFunctions extends JFrame implements Runnable {
 
 	@Override
 	public void run() {
-		String str = "";
+		String str="";
 		try {
 			dataInputStream = new DataInputStream(client.getInputStream());
-			while (!str.equals("exit")) {
-				str = dataInputStream.readUTF();
+			while(!str.equals("exit")) {
+				str=dataInputStream.readUTF();
 				resultArea.setText(resultArea.getText() + "\n" + str);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-
-		finally {
-			try {
-				client.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 }
 
 class WriteData extends Thread {
 	private Socket client;
-	Numbers numbers;
+	String sms;
 
-	public WriteData(Socket client, Numbers numbers) {
+	public WriteData(Socket client, String sms) {
 		this.client = client;
-		this.numbers = numbers;
+		this.sms = sms;
 	}
 
 	@Override
 	public void run() {
-		ObjectOutputStream objectOutputStream = null;
+		DataOutputStream dataOutputStream = null;
 		try {
-			objectOutputStream = new ObjectOutputStream(client.getOutputStream());
-			objectOutputStream.writeObject(numbers);
+			dataOutputStream = new DataOutputStream(client.getOutputStream());
+			dataOutputStream.writeUTF(sms);
+			dataOutputStream.flush();
 		} catch (Exception e) {
 			try {
-				objectOutputStream.close();
+				dataOutputStream.close();
 				client.close();
 			} catch (IOException ex) {
 				System.out.println("Server disconnected!W" + e);
 			}
 		}
 	}
-}
-
-class Numbers implements Serializable {
-	private static final long serialVersionUID = 1L;
-	private int num1;
-	private int num2;
-	private Action action;
-
-	public Numbers(int num1, int num2, Action action) {
-		super();
-		this.num1 = num1;
-		this.num2 = num2;
-		this.action = action;
-	}
-
-	public Action getAction() {
-		return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
-	}
-
-	public int getNum1() {
-		return num1;
-	}
-
-	public void setNum1(int num1) {
-		this.num1 = num1;
-	}
-
-	public int getNum2() {
-		return num2;
-	}
-
-	public void setNum2(int num2) {
-		this.num2 = num2;
-	}
-
 }

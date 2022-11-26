@@ -173,7 +173,6 @@ class WriteClient extends Thread {
 			
 			dataOutputStream.writeUTF(messageSend);
 			dataOutputStream.flush();
-			System.out.println("Client write: " + messageSend);
 			messageChatbox.setText(messageChatbox.getText().trim() + "\n" + messageSend);
 		} catch (Exception e) {
 			try {

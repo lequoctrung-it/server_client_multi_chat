@@ -36,7 +36,6 @@ import java.awt.Color;
 public class ServerGUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
 	private JTextField textField_1;
 	private static JTextArea msg_area;
 	
@@ -136,74 +135,66 @@ class ReadServer extends Thread {
 	
 	@Override
 	public void run() {
-		ObjectInputStream objectInputStream = null;
+		DataInputStream dataInputStream = null;
 		try {
 			String sms = null;
-			objectInputStream = new ObjectInputStream(server.getInputStream());
+			dataInputStream = new DataInputStream(server.getInputStream());
 			while (true) {
-				try {
-					if (objectInputStream.readObject().getClass() == String.class) {
-						sms = (String) objectInputStream.readObject();
-					} else {
-						Numbers data = (Numbers) objectInputStream.readObject();
-						sms = ExecuteNumbers(data);
-					}
-				} catch (ClassNotFoundException e) {
-					// TODO: handle exception
-					e.printStackTrace();
+				sms = dataInputStream.readUTF();
+				boolean isFunctions = sms.contains("@");
+				if (isFunctions) {
+					String[] smsSplited = sms.split("@");
+					sms = ExecuteNumbers(smsSplited);
 				}
 				
 				for (Socket item : ServerGUI.listSocket) {
-					if (item.getPort() != server.getPort()) {
+					if (item.getPort() != server.getPort() || isFunctions) {
 						DataOutputStream dataOutputStream = new DataOutputStream(item.getOutputStream());
 						dataOutputStream.writeUTF(sms);
 					}
 				}
-				System.out.println("Server read: " + sms);
 				messageChatbox.setText(messageChatbox.getText().trim() + "\n" + sms);
 			}
 			
 		} catch (IOException e) {
-			try {
-				objectInputStream.close();
-				server.close();
-			} catch (IOException e1) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 	
-	private String ExecuteNumbers(Numbers num) {
+	private String ExecuteNumbers(String[] sms) {
 		String res = "";
-		switch (num.getAction()) {
+		int num1 = Integer.parseInt(sms[0]);
+		int num2 = Integer.parseInt(sms[1]);
+		Action action = Action.valueOf(sms[2]);
+		
+		switch (action) {
 		case ADD:
-			res = "Sum of 2 numbers is: " + String.valueOf(num.getNum1() + num.getNum2());
+			res = "Sum of 2 numbers is: " + String.valueOf(num1 + num2);
 			break;
 		case MINUS:
-			res = "Minus of 2 numbers is: " + String.valueOf(num.getNum1() - num.getNum2());
+			res = "Minus of 2 numbers is: " + String.valueOf(num1 - num2);
 			break;
 		case MULTIPLY:
-			res = "Multiply of 2 numbers is: " + String.valueOf(num.getNum1() * num.getNum2());
+			res = "Multiply of 2 numbers is: " + String.valueOf(num1 * num2);
 			break;
 		case DIVIDE:
-			res = "Divide of 2 numbers is: " + String.valueOf(num.getNum1() / num.getNum2());
+			res = "Divide of 2 numbers is: " + String.valueOf(num1 / num2);
 			break;
 		case RECTANGLE_AREA:
-			res = "Area of rectangle is: " + String.valueOf(num.getNum1() * num.getNum2());
+			res = "Area of rectangle is: " + String.valueOf(num1 * num2);
 			break;
 		case RECTANGLE_PERIMETER:
-			res = "Perimeter of rectangle is: " + String.valueOf((num.getNum1() + num.getNum2())*2);
+			res = "Perimeter of rectangle is: " + String.valueOf((num1 + num2)*2);
 			break;
 		case SQUARE_AREA:
-			res = "Minus of 2 numbers is: " + String.valueOf(num.getNum1() * num.getNum2());
+			res = "Minus of 2 numbers is: " + String.valueOf(num1 * num2);
 			break;
 		case SQUARE_PERIMETER:
-			res = "Minus of 2 numbers is: " + String.valueOf((num.getNum1() + num.getNum2())*2);
+			res = "Minus of 2 numbers is: " + String.valueOf((num1 + num2)*2);
 			break;
 		default:
 			return "";
 		}
-		System.out.println(res);
 		return res;
 	}
 }
@@ -220,19 +211,16 @@ class WriteServer extends Thread {
 	@Override
 	public void run() {
 		DataOutputStream dataOutputStream = null;
-//		while (true) {
 			try {
 				for (Socket item : ServerGUI.listSocket) {
 					dataOutputStream = new DataOutputStream(item.getOutputStream());
 					dataOutputStream.writeUTF(messageSend);
 					dataOutputStream.flush();
 				}
-				System.out.println("Server write: " + messageSend);
 				messageChatbox.setText(messageChatbox.getText().trim() + "\n" + messageSend);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//		}
 	}
 }
 
