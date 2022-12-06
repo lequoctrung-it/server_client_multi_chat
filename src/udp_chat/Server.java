@@ -20,34 +20,6 @@ public class Server extends Thread{
 		this.port = port;
 	}
 
-//	public void execute() throws IOException {
-//		DatagramSocket server = new DatagramSocket(port);
-//		Server_GUI a = new Server_GUI();
-//		
-//		WriteServer write = new WriteServer(server);
-//		write.start();
-//
-//		System.out.println("Server is listening...");
-//		a.setChatArea("Server is listening...");
-//
-//		while (true) {
-//			String sms = recieveData(server);
-//			for (DatagramPacket item : listSK.keySet()) {
-//				if (!(item.getAddress().equals(clientIP) && item.getPort() == clientPort)) {
-//					sendData(sms, server, item.getAddress(), item.getPort());
-//				}
-//			}
-//			System.out.println(sms);
-//		}
-//
-//	}
-	
-//	public static void main(String[] args) throws IOException {
-//		Server.listSK = new HashMap<DatagramPacket, Integer>();
-//		Server server = new Server(15797);
-//		server.execute();
-//	}
-
 	private String recieveData(DatagramSocket server) throws IOException {
 		byte[] temp = new byte[1024];
 		DatagramPacket recieve_Packet = new DatagramPacket(temp, temp.length);
@@ -55,7 +27,6 @@ public class Server extends Thread{
 		clientIP = recieve_Packet.getAddress();
 		clientPort = recieve_Packet.getPort();
 		checkDuplicate(recieve_Packet);
-		System.out.println(listSK);
 		return new String(recieve_Packet.getData()).trim();
 	}
 
