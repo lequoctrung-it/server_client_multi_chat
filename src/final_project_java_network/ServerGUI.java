@@ -25,6 +25,7 @@ import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -32,11 +33,9 @@ import java.util.ArrayList;
 import javax.swing.JTextArea;
 import java.awt.Color;
 
-public class Server_GUI extends JFrame{
+public class ServerGUI extends JFrame {
 
-	
 	private JPanel contentPane;
-	private JTextField textField;
 	private JTextField textField_1;
 	private static JTextArea msg_area;
 	
@@ -49,11 +48,11 @@ public class Server_GUI extends JFrame{
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Server_GUI frame = new Server_GUI();
+					ServerGUI frame = new ServerGUI();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -75,13 +74,12 @@ public class Server_GUI extends JFrame{
 			e.printStackTrace();
 		}
 	}
-	
 
 	/**
 	 * Create the frame.
 	 */
-	public Server_GUI() {
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public ServerGUI() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -106,8 +104,7 @@ public class Server_GUI extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DataOutputStream dataOutputStream = null;
-				String sms = ""; //data from GUI
+				String sms = "";
 				sms = "Server: " + textField_1.getText().trim();
 				new WriteServer(msg_area, sms).start();;
 				textField_1.setText("");
@@ -140,27 +137,65 @@ class ReadServer extends Thread {
 	public void run() {
 		DataInputStream dataInputStream = null;
 		try {
+			String sms = null;
 			dataInputStream = new DataInputStream(server.getInputStream());
 			while (true) {
-				String sms = dataInputStream.readUTF();
-				for (Socket item : Server_GUI.listSocket) {
-					if (item.getPort() != server.getPort()) {
+				sms = dataInputStream.readUTF();
+				boolean isFunctions = sms.contains("@");
+				if (isFunctions) {
+					String[] smsSplited = sms.split("@");
+					sms = ExecuteNumbers(smsSplited);
+				}
+				
+				for (Socket item : ServerGUI.listSocket) {
+					if (item.getPort() != server.getPort() || isFunctions) {
 						DataOutputStream dataOutputStream = new DataOutputStream(item.getOutputStream());
 						dataOutputStream.writeUTF(sms);
 					}
 				}
-				System.out.println("Server read: " + sms);
 				messageChatbox.setText(messageChatbox.getText().trim() + "\n" + sms);
 			}
 			
 		} catch (IOException e) {
-			try {
-				dataInputStream.close();
-				server.close();
-			} catch (IOException e1) {
-				e.printStackTrace();
-			}
+			e.printStackTrace();
 		}
+	}
+	
+	private String ExecuteNumbers(String[] sms) {
+		String res = "";
+		int num1 = Integer.parseInt(sms[0]);
+		int num2 = Integer.parseInt(sms[1]);
+		Action action = Action.valueOf(sms[2]);
+		
+		switch (action) {
+		case ADD:
+			res = "Sum of 2 numbers is: " + String.valueOf(num1 + num2);
+			break;
+		case MINUS:
+			res = "Minus of 2 numbers is: " + String.valueOf(num1 - num2);
+			break;
+		case MULTIPLY:
+			res = "Multiply of 2 numbers is: " + String.valueOf(num1 * num2);
+			break;
+		case DIVIDE:
+			res = "Divide of 2 numbers is: " + String.valueOf(num1 / num2);
+			break;
+		case RECTANGLE_AREA:
+			res = "Area of rectangle is: " + String.valueOf(num1 * num2);
+			break;
+		case RECTANGLE_PERIMETER:
+			res = "Perimeter of rectangle is: " + String.valueOf((num1 + num2)*2);
+			break;
+		case SQUARE_AREA:
+			res = "Minus of 2 numbers is: " + String.valueOf(num1 * num2);
+			break;
+		case SQUARE_PERIMETER:
+			res = "Minus of 2 numbers is: " + String.valueOf((num1 + num2)*2);
+			break;
+		default:
+			return "";
+		}
+		return res;
 	}
 }
 
@@ -176,19 +211,16 @@ class WriteServer extends Thread {
 	@Override
 	public void run() {
 		DataOutputStream dataOutputStream = null;
-//		while (true) {
 			try {
-				for (Socket item : Server_GUI.listSocket) {
+				for (Socket item : ServerGUI.listSocket) {
 					dataOutputStream = new DataOutputStream(item.getOutputStream());
 					dataOutputStream.writeUTF(messageSend);
 					dataOutputStream.flush();
 				}
-				System.out.println("Server write: " + messageSend);
 				messageChatbox.setText(messageChatbox.getText().trim() + "\n" + messageSend);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//		}
 	}
 }
 
