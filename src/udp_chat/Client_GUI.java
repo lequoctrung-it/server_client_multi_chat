@@ -66,6 +66,7 @@ public class Client_GUI extends JFrame {
 //					System.out.println(InetAddress.getByName(hostName)+ "-" + portNo);
 
 					client = new DatagramSocket();
+					System.out.println(client);
 					if (nameField.getText().isEmpty()) {
 						client.send(createPacket("Anonymous" + " joined"));
 					} else {
