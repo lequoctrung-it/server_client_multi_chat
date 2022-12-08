@@ -52,7 +52,7 @@ public class Client_GUI extends JFrame {
 	 */
 	public Client_GUI() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 459, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -92,15 +92,15 @@ public class Client_GUI extends JFrame {
 
 			}
 		});
-		btnNewButton.setBounds(337, 7, 87, 20);
+		btnNewButton.setBounds(337, 7, 89, 20);
 		contentPane.add(btnNewButton);
 
-		JLabel lblNewLabel_2 = new JLabel("NAME");
-		lblNewLabel_2.setBounds(10, 10, 46, 14);
+		JLabel lblNewLabel_2 = new JLabel("ENTER NAME:");
+		lblNewLabel_2.setBounds(10, 10, 83, 14);
 		contentPane.add(lblNewLabel_2);
 
 		nameField = new JTextField();
-		nameField.setBounds(57, 7, 270, 20);
+		nameField.setBounds(85, 7, 242, 20);
 		contentPane.add(nameField);
 		nameField.setColumns(10);
 
@@ -120,7 +120,7 @@ public class Client_GUI extends JFrame {
 				}
 			}
 		});
-		btnNewButton_1.setBounds(337, 205, 89, 23);
+		btnNewButton_1.setBounds(337, 182, 89, 68);
 		contentPane.add(btnNewButton_1);
 
 		chatArea = new JTextArea();
@@ -128,7 +128,7 @@ public class Client_GUI extends JFrame {
 		contentPane.add(chatArea);
 
 		scrollPane = new JScrollPane(chatArea);
-		scrollPane.setBounds(10, 35, 317, 139);
+		scrollPane.setBounds(10, 35, 416, 139);
 		contentPane.add(scrollPane);
 
 	}

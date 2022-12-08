@@ -16,6 +16,9 @@ import javax.swing.JTextArea;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class Server_GUI extends JFrame {
 	private JPanel contentPane;
@@ -55,19 +58,8 @@ public class Server_GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTextArea ChatArea = new JTextArea();
-		ChatArea.setBounds(10, 51, 414, 134);
-		contentPane.add(ChatArea);
-		
-		JTextArea smsbox = new JTextArea();
-		smsbox.setBounds(10, 196, 337, 54);
-		contentPane.add(smsbox);
-		
-		JButton btnNewButton = new JButton("Send");
-		btnNewButton.setBounds(357, 196, 67, 54);
-		contentPane.add(btnNewButton);
-		
 		JButton btnNewButton_1 = new JButton("Start Sever");
+		btnNewButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Server.listSK = new HashMap<DatagramPacket, Integer>();
@@ -80,12 +72,16 @@ public class Server_GUI extends JFrame {
 			}
 			
 		});
-		btnNewButton_1.setBounds(159, 11, 148, 23);
+		btnNewButton_1.setBounds(101, 99, 239, 67);
 		contentPane.add(btnNewButton_1);
+		
+		JLabel lblNewLabel = new JLabel("UDP Server Chat Multiclient App");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(86, 42, 264, 32);
+		contentPane.add(lblNewLabel);
 		
 		
 	}
-	
-
 }
 
