@@ -187,10 +187,10 @@ class ReadServer extends Thread {
 			res = "Perimeter of rectangle is: " + String.valueOf((num1 + num2)*2);
 			break;
 		case SQUARE_AREA:
-			res = "Minus of 2 numbers is: " + String.valueOf(num1 * num2);
+			res = "Area of square is: " + String.valueOf(num1 * num2);
 			break;
 		case SQUARE_PERIMETER:
-			res = "Minus of 2 numbers is: " + String.valueOf((num1 + num2)*2);
+			res = "Perimeter of square is: " + String.valueOf((num1 + num2)*2);
 			break;
 		default:
 			return "";
